@@ -3,6 +3,9 @@
 *.aar
 *.ap_
 *.aab
+*.gradle
+*.idea
+local.properties
 
 # Files for the ART/Dalvik VM
 *.dex

@@ -1,5 +1,5 @@
 package com.example.gptbros
-
+import android.util.Log
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +10,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.gptbros.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,5 +28,31 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        Log.d("MainActivity","onCreate was called");
+    }
+
+    override fun onStart() {
+        super.onStart();
+        Log.d("MainActivity","OnCreate was called");
+    }
+
+    override fun onResume() {
+        super.onResume();
+        Log.d("MainActivity","onResume was called");
+    }
+
+    override fun onPause() {
+        super.onPause();
+        Log.d("MainActivity","onPause was called");
+    }
+
+    override fun onStop() {
+        super.onStop();
+        Log.d("MainActivity","onStop was called");
+    }
+
+    override fun onDestroy() {
+        super.onDestroy();
+        Log.d("MainActivity","onDestroy was called");
     }
 }
