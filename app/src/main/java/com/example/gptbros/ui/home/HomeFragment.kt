@@ -1,5 +1,6 @@
 package com.example.gptbros.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,6 +63,8 @@ class HomeFragment : Fragment() {
             println("Generated a new exercise")
 
         }
+
+//        binding.buttonRecord.setBackgroundColor(Color.RED)
     }
 
     override fun onDestroyView() {
