@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1045186047407",
+    "project_id": "gptbros",
+    "storage_bucket": "gptbros.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045186047407:android:e6ca0be9515fc1820b135a",
+        "android_client_info": {
+          "package_name": "com.example.gptbros"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045186047407-uoijvq09s4kf7sv9ak9h8b641ipqli5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz0n2ZtLtjiF0cFeE9sb1aPiyFVMGkoMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045186047407-uoijvq09s4kf7sv9ak9h8b641ipqli5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
