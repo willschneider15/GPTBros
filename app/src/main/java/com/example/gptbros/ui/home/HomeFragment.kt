@@ -33,7 +33,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-import android.util.Log
+
 
 import java.io.IOException
 
