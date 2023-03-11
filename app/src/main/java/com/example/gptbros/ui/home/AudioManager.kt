@@ -13,6 +13,8 @@ class AudioManager(private val context: Context) {
 
     private var mediaRecorder: MediaRecorder? = null
     private var mediaPlayer: MediaPlayer? = null
+    private var fileLocation: String = ""
+
 
 //    fun startPlayback(id: Int): Boolean {
 //        val path = filePathForId(id)
@@ -63,7 +65,7 @@ class AudioManager(private val context: Context) {
             mediaRecorder?.setAudioEncodingBitRate(128000)
 
             //specify where to save
-            val fileLocation = filePathForId(id)
+            fileLocation = filePathForId(id)
             mediaRecorder?.setOutputFile(fileLocation)
             //filePathForId(id)
 
@@ -79,6 +81,9 @@ class AudioManager(private val context: Context) {
     }
 
     fun stopRecording() {
+        // ADD FIREBASE CODE HERE
+
+
         mediaRecorder?.stop()
         mediaRecorder?.release()
         mediaRecorder = null
