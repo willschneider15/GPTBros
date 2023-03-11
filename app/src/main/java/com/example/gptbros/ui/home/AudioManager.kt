@@ -26,11 +26,11 @@ class AudioManager(private val context: Context) {
 //        return false
 //    }
 
-    fun stopPlayback() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
-    }
+//    fun stopPlayback() {
+//        mediaPlayer?.stop()
+//        mediaPlayer?.release()
+//        mediaPlayer = null
+//    }
 
     private fun filePathForId(id: Int): String { //Once Kotlin has proper UInt type change this
 //        return Environment.getExternalStorageDirectory().absolutePath + "/$id.aac"

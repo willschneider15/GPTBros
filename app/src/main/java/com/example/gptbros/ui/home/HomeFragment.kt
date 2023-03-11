@@ -109,13 +109,14 @@ class HomeFragment : Fragment() {
             } else if (recording) {
                 audioManager.stopRecording()
                 recording = false
+                Log.d("home fragment,", "stop recording")
             }
             else{
                 val id = 2
 
                 audioManager.startRecording(id)
                 recording = true
-                Log.d("home fragment,", "we here or what")
+                Log.d("home fragment,", "start recording")
             }
         }
 
@@ -204,6 +205,7 @@ class HomeFragment : Fragment() {
 //        }
 //    }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun addSession(){
         val audioSession = hashMapOf(
             "sessionId" to 1,
