@@ -17,6 +17,7 @@ class RegisterActivity : AppCompatActivity() {
 
     val db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
+    var loginSuccessful = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,9 @@ class RegisterActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener{
             performSignUp()
+            if(loginSuccessful){
+                addNewUser(auth.currentUser?.email.toString())
+            }
         }
     }
 
@@ -58,9 +62,7 @@ class RegisterActivity : AppCompatActivity() {
                     //Alert User that signon has failed
                     Toast.makeText(baseContext, "Success",
                         Toast.LENGTH_SHORT).show()
-
-                    addNewUser()
-
+                    loginSuccessful = true
                 } else {
                     //Alert User that signon has failed
                     Toast.makeText(baseContext, "Registration Failed",
@@ -73,10 +75,12 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    fun addNewUser(){
+
+
+    private fun addNewUser(email: String){
 
         val newUser = hashMapOf(
-            "email" to auth.currentUser?.email.toString(),
+            "email" to email,
             "username" to "temp_name",
             "Settings" to "idk",
             "userId" to 12345,

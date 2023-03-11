@@ -62,6 +62,7 @@ class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -117,6 +118,7 @@ class HomeFragment : Fragment() {
                 audioManager.startRecording(id)
                 recording = true
                 Log.d("home fragment,", "start recording")
+                addSession()
             }
         }
 
