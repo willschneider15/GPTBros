@@ -13,7 +13,33 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.gptbros.databinding.FragmentHomeBinding
 
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.content.pm.PackageManager
+import android.media.MediaRecorder
+import android.os.Build
+// import android.support.v7.app.AppCompatActivity
+
+import android.os.Environment
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+
+import android.util.Log
+
+import java.io.IOException
+
+
 class HomeFragment : Fragment() {
+//    private var output: String? = null
+//    private var mediaRecorder: MediaRecorder? = null
+//    private var state: Boolean = false
+//    private var recordingStopped: Boolean = false
+
+    private lateinit var audioManager: AudioManager
+
+    private var recording = false
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -21,6 +47,7 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -29,7 +56,6 @@ class HomeFragment : Fragment() {
 
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
 
 //        val textView: TextView = binding.textHome
 ////        val buttonText: TextView = binding.buttonRecord
@@ -44,6 +70,50 @@ class HomeFragment : Fragment() {
 //            textView.text = it
 //
 //        }
+//        mediaRecorder = context?.let { MediaRecorder(it) }
+//        output = Environment.getExternalStorageDirectory().absolutePath + "/recording.mp3"
+//
+//        mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
+//        mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//        mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+//        mediaRecorder?.setOutputFile(output)
+
+//
+        audioManager = context?.let { AudioManager(it) }!!
+        binding.buttonRecord.setOnClickListener {
+            if (context?.let {
+                    ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.RECORD_AUDIO)
+                } != PackageManager.PERMISSION_GRANTED && context?.let {
+                    ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                } != PackageManager.PERMISSION_GRANTED) {
+                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                activity?.let { it1 -> ActivityCompat.requestPermissions(it1, permissions,0) }
+            } else if (recording) {
+                audioManager.stopRecording()
+                recording = false
+            }
+            else{
+                val id = 2
+
+                audioManager.startRecording(id)
+                recording = true
+                Log.d("home fragment,", "we here or what")
+            }
+        }
+
+//        binding.buttonRecord.setOnClickListener{
+//            stopRecording()
+//        }
+//
+//        binding.buttonRecord.setOnClickListener {
+//            pauseRecording()
+//        }
+
+
         return binding.root
     }
 
@@ -58,14 +128,64 @@ class HomeFragment : Fragment() {
 
         }
 
-        binding.buttonRecord.setOnClickListener {
-            Toast.makeText(view.context, "New exercise will be generated", Toast.LENGTH_SHORT).show()
-            println("Generated a new exercise")
+//        binding.buttonRecord.setOnClickListener {
+//            Toast.makeText(view.context, "New exercise will be generated", Toast.LENGTH_SHORT).show()
+//            println("Generated a new exercise")
+//
+//        }
 
-        }
+
+
 
 //        binding.buttonRecord.setBackgroundColor(Color.RED)
     }
+
+//    private fun startRecording() {
+//        try {
+//            mediaRecorder?.prepare()
+//            mediaRecorder?.start()
+//            state = true
+//            Toast.makeText(context, "Recording started!", Toast.LENGTH_SHORT).show()
+//        } catch (e: IllegalStateException) {
+//            e.printStackTrace()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//    }
+
+//    @SuppressLint("RestrictedApi", "SetTextI18n")
+//    @TargetApi(Build.VERSION_CODES.N)
+//    private fun pauseRecording() {
+//        if(state) {
+//            if(!recordingStopped){
+//                Toast.makeText(context,"Stopped!", Toast.LENGTH_SHORT).show()
+//                mediaRecorder?.pause()
+//                recordingStopped = true
+//                binding.buttonRecord.text = "Resume"
+//            }else{
+//                resumeRecording()
+//            }
+//        }
+//    }
+
+//    @SuppressLint("RestrictedApi", "SetTextI18n")
+//    @TargetApi(Build.VERSION_CODES.N)
+//    private fun resumeRecording() {
+//        Toast.makeText(context,"Resume!", Toast.LENGTH_SHORT).show()
+//        mediaRecorder?.resume()
+//        binding.buttonRecord.text = "Pause"
+//        recordingStopped = false
+//    }
+
+//    private fun stopRecording(){
+//        if(state){
+//            mediaRecorder?.stop()
+//            mediaRecorder?.release()
+//            state = false
+//        }else{
+//            Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
