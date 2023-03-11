@@ -17,6 +17,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+
+
         auth = FirebaseAuth.getInstance()
 
         val registerText: TextView = findViewById(R.id.register_now_text)

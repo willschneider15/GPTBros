@@ -3,7 +3,6 @@
 *.aar
 *.ap_
 *.aab
-*.gradle
 *.idea
 local.properties
 
@@ -21,7 +20,6 @@ out/
 # release/
 
 # Gradle files
-.gradle/
 build/
 
 # Local configuration file (sdk path, etc)
