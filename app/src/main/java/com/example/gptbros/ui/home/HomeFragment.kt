@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.gptbros.MainActivity
 import com.example.gptbros.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
@@ -24,6 +23,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.media.MediaRecorder
 import android.os.Build
 // import android.support.v7.app.AppCompatActivity
@@ -94,32 +94,8 @@ class HomeFragment : Fragment() {
 //        mediaRecorder?.setOutputFile(output)
 
 //
-        audioManager = context?.let { AudioManager(it) }!!
         binding.buttonRecord.setOnClickListener {
-            if (context?.let {
-                    ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.RECORD_AUDIO)
-                } != PackageManager.PERMISSION_GRANTED && context?.let {
-                    ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                } != PackageManager.PERMISSION_GRANTED) {
-                val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                activity?.let { it1 -> ActivityCompat.requestPermissions(it1, permissions,0) }
-            } else if (recording) {
-                audioManager.stopRecording()
-                recording = false
-                Log.d("home fragment,", "stop recording")
-            }
-            else{
-                val id = 2
-
-                audioManager.startRecording(id)
-                recording = true
-                Log.d("home fragment,", "start recording")
-                addSession()
-            }
+            Toast.makeText(context, "placeholder text", Toast.LENGTH_SHORT)
         }
 
 //        binding.buttonRecord.setOnClickListener{
