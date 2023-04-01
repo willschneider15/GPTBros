@@ -1,4 +1,4 @@
-package com.example.gptbros.ui.utils
+package com.example.gptbros.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
