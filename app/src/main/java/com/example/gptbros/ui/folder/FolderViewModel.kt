@@ -29,6 +29,8 @@ class FolderViewModel : ViewModel() {
         FolderListItem(UUID.randomUUID(), "GPU Computing Concepts", "Parallel Computing", Stage.TRANSCRIBING, Status.IN_PROGRESS, Date()),
         FolderListItem(UUID.randomUUID(), "Basic Message Passing Interface (MPI) Concepts", "Parallel Computing", Stage.TRANSCRIBING, Status.FINISHED, Date()),
         FolderListItem(UUID.randomUUID(), "Finals Review", "Parallel Computing", Stage.SUMMARIZING, Status.ERROR, Date()),
+        FolderListItem(UUID.randomUUID(), "Cool Class", "Parallel Computing", Stage.TRANSCRIBING, Status.FINISHED, Date()),
+        FolderListItem(UUID.randomUUID(), "Fun Class", "Parallel Computing", Stage.SUMMARIZING, Status.ERROR, Date()),
     )
 
     private val gptBrosRepository = GptBrosRepository.get()
