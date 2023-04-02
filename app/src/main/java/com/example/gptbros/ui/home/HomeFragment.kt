@@ -1,7 +1,6 @@
 package com.example.gptbros.ui.home
 
 import android.content.ContentValues
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,28 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gptbros.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.content.pm.PackageManager
 import android.media.AudioManager
-import android.media.MediaRecorder
 import android.os.Build
 // import android.support.v7.app.AppCompatActivity
 
-import android.os.Environment
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-
-
-
-import java.io.IOException
 
 
 class HomeFragment : Fragment() {
@@ -96,6 +82,7 @@ class HomeFragment : Fragment() {
 //
         binding.buttonRecord.setOnClickListener {
             Toast.makeText(context, "placeholder text", Toast.LENGTH_SHORT)
+
         }
 
 //        binding.buttonRecord.setOnClickListener{
@@ -121,7 +108,6 @@ class HomeFragment : Fragment() {
             textView.text = it
 
         }
-
 
 //        binding.buttonRecord.setOnClickListener {
 //            Toast.makeText(view.context, "New exercise will be generated", Toast.LENGTH_SHORT).show()

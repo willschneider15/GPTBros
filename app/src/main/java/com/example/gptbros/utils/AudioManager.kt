@@ -5,9 +5,12 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
-import java.io.File
-import android.os.Environment
 import android.util.Log
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 class AudioManager(private val context: Context) {
 
@@ -81,7 +84,15 @@ class AudioManager(private val context: Context) {
     }
 
     fun stopRecording() {
-        // ADD FIREBASE CODE HERE
+        //make api call
+
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                photoGalleryViewModel.galleryItems.collect { items ->
+//                    binding.photoGrid.adapter = PhotoListAdapter(items)
+//                }
+//            }
+//        }
 
 
         mediaRecorder?.stop()
