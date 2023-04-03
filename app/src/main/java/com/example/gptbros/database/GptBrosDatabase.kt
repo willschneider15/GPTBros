@@ -1,7 +1,6 @@
 package com.example.gptbros.database
 
 import androidx.room.Database
-import androidx.room.Insert
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.gptbros.model.Recording

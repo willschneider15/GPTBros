@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aallam.openai.api.BetaOpenAI
+import com.example.gptbros.model.api.SummaryItem
 import com.example.gptbros.utils.SummaryAPI
 import kotlinx.coroutines.launch
 
@@ -130,8 +131,8 @@ class HomeViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                val summary = summaryAPI.fetchSummary(transcript)
-                Log.d(TAG, "API response received: $summary")
+                val summary: SummaryItem = summaryAPI.fetchSummary(transcript)
+                Log.d(TAG, "API response received, Summary text: ${summary.content}")
             } catch (ex: Exception) {
                 Log.e(TAG, "Failed to fetch api response", ex)
             }

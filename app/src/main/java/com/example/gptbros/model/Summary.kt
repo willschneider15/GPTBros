@@ -3,6 +3,8 @@ package com.example.gptbros.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.gptbros.model.Session
+import com.example.gptbros.model.Status
 import java.util.UUID
 
 

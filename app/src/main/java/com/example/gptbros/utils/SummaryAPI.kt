@@ -2,13 +2,12 @@ package com.example.gptbros.utils
 
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.*
-import com.aallam.openai.api.completion.CompletionRequest
-import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
-import kotlinx.coroutines.flow.Flow
+import com.example.gptbros.model.api.SummaryItem
 
-const val API_KEY = "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"
+
+const val API_KEY = "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"
 
 class SummaryAPI {
     private val openAI = OpenAI(API_KEY)
@@ -24,15 +23,24 @@ class SummaryAPI {
         messages = listOf(
             ChatMessage(
                 role = ChatRole.User,
-                content = "Given the following transcript from a lecture, Create a summary of the transcript " +
-                        "that highlights key points and gives insight on the main concepts: " + transcript
+                content = "Given the following transcript from a lecture, Write a 2-3 sentance general summary of the lecture followed by  " +
+                        "bullets that highlight key points. For each point, the point and an " +
+                        "explanation of it in: " + transcript
             )
         )
     )
+
     @OptIn(BetaOpenAI::class)
-    suspend fun fetchSummary(text: String): ChatCompletion {
+    fun makeSumItem(chatResponse: ChatCompletion): SummaryItem{
+        return SummaryItem(chatResponse.id, chatResponse.model.toString(),
+            (chatResponse.choices[0].message?.content ?: String) as String
+        )
+    }
+
+    @OptIn(BetaOpenAI::class)
+    suspend fun fetchSummary(text: String): SummaryItem {
         transcript = text
         val chatRequest = chatRequest()
-        return openAI.chatCompletion(chatRequest)
+        return makeSumItem(openAI.chatCompletion(chatRequest))
     }
 }
