@@ -1,22 +1,21 @@
 package com.example.gptbros.ui.folder
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptbros.adapters.DatabaseTupleAdapter
 import com.example.gptbros.model.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.math.log
 
 
 class FolderViewModel : ViewModel() {
-
+    private val TAG : String = "FolderViewModel"
     private val TEST_DATA : List<FolderListItem> = listOf(
         FolderListItem(UUID.randomUUID(), "Introduction; characteristics of mobile applications", "CSE 5236", Stage.TRANSCRIBING, Status.IN_PROGRESS, Date()),
         FolderListItem(UUID.randomUUID(), "Overview of mobile application development languages (Swift and Java)", "CSE 5236", Stage.SUMMARIZING, Status.IN_PROGRESS, Date()),
@@ -30,6 +29,8 @@ class FolderViewModel : ViewModel() {
         FolderListItem(UUID.randomUUID(), "GPU Computing Concepts", "Parallel Computing", Stage.TRANSCRIBING, Status.IN_PROGRESS, Date()),
         FolderListItem(UUID.randomUUID(), "Basic Message Passing Interface (MPI) Concepts", "Parallel Computing", Stage.TRANSCRIBING, Status.FINISHED, Date()),
         FolderListItem(UUID.randomUUID(), "Finals Review", "Parallel Computing", Stage.SUMMARIZING, Status.ERROR, Date()),
+        FolderListItem(UUID.randomUUID(), "Cool Class", "Parallel Computing", Stage.TRANSCRIBING, Status.FINISHED, Date()),
+        FolderListItem(UUID.randomUUID(), "Fun Class", "Parallel Computing", Stage.SUMMARIZING, Status.ERROR, Date()),
     )
     private val gptBrosRepository = GptBrosRepository.get()
     private val _folderListItems : MutableStateFlow<List<FolderListItem>> = MutableStateFlow(emptyList())
@@ -48,8 +49,10 @@ class FolderViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             gptBrosRepository.getSessions().collect() {
+                largeLog(TAG, "INCOMING:"+it.toString())
+                largeLog(TAG, "CURRENT:"+_folderListItems.value.toString())
                 val result : MutableList<FolderListItem> = mutableListOf()
-                Log.d("FOLDERVIEWMODEL",  "id="+it.toString())
+                //Log.d("FOLDERVIEWMODEL",  "id="+it.toString())
                 it.forEach { entry ->
                     val status: Status =  gptBrosRepository.getSessionStatus(entry)
                     result.add(
@@ -59,6 +62,7 @@ class FolderViewModel : ViewModel() {
                             )
                     )
                 }
+                largeLog(TAG, "NEW:"+result.toList().toString())
                 _folderListItems.value = result.toList()
             }
         }
@@ -94,6 +98,14 @@ class FolderViewModel : ViewModel() {
         }
         recordings.forEach{
             gptBrosRepository.insertRecording(it)
+        }
+    }
+    fun largeLog(tag: String?, content: String) {
+        if (content.length > 4000) {
+            Log.d(tag, content.substring(0, 4000))
+            largeLog(tag, content.substring(4000))
+        } else {
+            Log.d(tag, content)
         }
     }
 }
