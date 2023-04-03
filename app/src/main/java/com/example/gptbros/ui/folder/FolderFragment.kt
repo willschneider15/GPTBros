@@ -43,10 +43,10 @@ class FolderFragment : Fragment() {
         binding.folderRecyclerView.layoutManager = LinearLayoutManager(context)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        folderViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+//        val textView: TextView = binding.textNotifications
+////        folderViewModel.text.observe(viewLifecycleOwner) {
+////            textView.text = it
+////        }
         return root
     }
 
@@ -55,9 +55,11 @@ class FolderFragment : Fragment() {
 
         //As long as the the fragment is in STARTED or higher the the view will be updated with new summaries and their status
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                folderViewModel.folderListItems.collect() {items ->
-                    //binding.folderRecyclerView.adapter = FolderListItemAdapter(items)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    folderViewModel.folderListItems.collect { items ->
+                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items)
+                    }
                 }
             }
         }
