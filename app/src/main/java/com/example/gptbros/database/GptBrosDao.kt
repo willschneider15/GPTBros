@@ -3,6 +3,7 @@ package com.example.gptbros.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.gptbros.model.Recording
 import com.example.gptbros.model.Session
 import com.example.gptbros.model.Summary
@@ -21,18 +22,38 @@ interface GptBrosDao {
     @Insert
     suspend fun insertTranscription(transcription: Transcription)
 
+    @Update
+    suspend fun updateSession(session : Session)
+
+    @Update
+    suspend fun updateSummary(summary: Summary)
+
+    @Update
+    suspend fun updateRecording(recording: Recording)
+
+    @Update
+    suspend fun updateTranscription(transcription: Transcription)
+
     //implement relations(?)
     //":sessionId" denotes the sessionId parameter in the method
     @Query("SELECT * FROM summary WHERE sessionId=(:sessionId)")
     suspend fun getSummary(sessionId : UUID) : Summary
+    @Query("SELECT * FROM recording WHERE sessionId=(:sessionId)")
+    suspend fun getRecording(sessionId : UUID) : Recording
+    @Query("SELECT * FROM transcription WHERE sessionId=(:sessionId)")
+    suspend fun getTranscription(sessionId : UUID) : Transcription
+
+    @Query("SELECT * FROM session WHERE sessionId=(:sessionId)")
+    suspend fun getSession(sessionId : UUID) : Session
+
     @Query("SELECT * FROM session")
     fun getSessions() : Flow<List<Session>>
 
     @Query(
         "SELECT * FROM session " +
-        "JOIN summary ON session.sessionId"
+        "JOIN summary ON session.sessionId = summary.sessionID"
     )
-    fun getSummaries() : Flow<Map<Session, List<Summary>>>
+    fun getSummaries() : Flow<Map<Session, Summary>>
 
 
 }

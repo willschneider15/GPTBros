@@ -12,4 +12,6 @@ data class Session(
     @PrimaryKey val sessionId : UUID,
     val date : Date,
     val stage : Stage,
-)
+    val className : String,
+    val label : String,
+    )

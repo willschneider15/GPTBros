@@ -57,6 +57,7 @@ class FolderFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 folderViewModel.folderListItems.collect() {items ->
+                    Log.d("FOLDERVIEWFRAGMENT",items.toString())
                     //binding.folderRecyclerView.adapter = FolderListItemAdapter(items)
                 }
             }
