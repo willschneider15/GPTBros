@@ -7,7 +7,7 @@ import com.aallam.openai.client.OpenAI
 import com.example.gptbros.model.api.SummaryItem
 
 
-const val API_KEY = "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"
+const val API_KEY = "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"
 
 class SummaryAPI {
     private val openAI = OpenAI(API_KEY)

@@ -2,7 +2,6 @@ package com.example.gptbros.ui.home
 
 import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +11,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gptbros.databinding.FragmentHomeBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 
 import android.media.AudioManager
 import android.os.Build
+import android.util.Log
 // import android.support.v7.app.AppCompatActivity
 
 import androidx.annotation.RequiresApi
+import com.example.gptbros.R
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.speech.v1.*
 
 
 class HomeFragment : Fragment() {
@@ -40,12 +40,14 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-
-    @RequiresApi(Build.VERSION_CODES.S)
-
-    // Write a message to the database
-    val db = Firebase.firestore
-    private lateinit var auth: FirebaseAuth
+    private fun getSpeechClient(): SpeechClient {
+       return  activity?.applicationContext?.resources?.openRawResource(R.raw.credential).use {
+            SpeechClient.create(
+                SpeechSettings.newBuilder()
+                    .setCredentialsProvider { GoogleCredentials.fromStream(it) }
+                    .build())
+        }
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -100,12 +102,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        binding.textHome.text="This is an exceptionally hardcoded string"
-        auth = FirebaseAuth.getInstance()
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
         val textView: TextView = binding.textHome
+        homeViewModel._speechClient.value = getSpeechClient()
+        homeViewModel._recFilePath.value = activity!!.getExternalFilesDir("rec").toString() + "Baker Systems Engineering.m4a"
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+
 
         }
 
@@ -120,6 +124,7 @@ class HomeFragment : Fragment() {
 
 //        binding.buttonRecord.setBackgroundColor(Color.RED)
     }
+
 
 
 //    private fun startRecording() {
@@ -169,28 +174,28 @@ class HomeFragment : Fragment() {
 //        }
 //    }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun addSession(){
-        val audioSession = hashMapOf(
-            "sessionId" to 1,
-            "audiofile" to "file",
-            "transcription" to "trans_file",
-            "summary" to "sum_file",
-            "dateTimeStart" to "1/1/22-1:22",
-            "dateTimeEnd" to "1/1/22-1:56",
-            "audiofileURL" to "temp_url"
-        )
-
-        // Add a new document with a generated ID
-        db.collection("users/"+auth.currentUser?.email.toString())
-            .add(audioSession)
-            .addOnSuccessListener { documentReference ->
-                Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error adding document", e)
-            }
-    }
+//    @RequiresApi(Build.VERSION_CODES.S)
+//    fun addSession(){
+//        val audioSession = hashMapOf(
+//            "sessionId" to 1,
+//            "audiofile" to "file",
+//            "transcription" to "trans_file",
+//            "summary" to "sum_file",
+//            "dateTimeStart" to "1/1/22-1:22",
+//            "dateTimeEnd" to "1/1/22-1:56",
+//            "audiofileURL" to "temp_url"
+//        )
+//
+//        // Add a new document with a generated ID
+//        db.collection("users/"+auth.currentUser?.email.toString())
+//            .add(audioSession)
+//            .addOnSuccessListener { documentReference ->
+//                Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w(ContentValues.TAG, "Error adding document", e)
+//            }
+//    }
 
 
 
@@ -199,3 +204,4 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 }
+
