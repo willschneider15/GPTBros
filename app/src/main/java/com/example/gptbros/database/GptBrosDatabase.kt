@@ -9,7 +9,7 @@ import com.example.gptbros.model.Session
 import com.example.gptbros.model.Summary
 import com.example.gptbros.model.Transcription
 
-@Database(entities = [Session::class, Recording::class, Transcription::class, Summary::class], version = 1)
+@Database(entities = [Session::class, Recording::class, Transcription::class, Summary::class], version = 4)
 @TypeConverters(GptBrosTypeConverters::class)
 abstract class GptBrosDatabase : RoomDatabase(){
 

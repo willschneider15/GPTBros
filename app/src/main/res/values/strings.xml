@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="recording_title">Enter a title for your recording</string>
+    <string name="recording_catagory">Enter the category for your recording</string>
 </resources>
