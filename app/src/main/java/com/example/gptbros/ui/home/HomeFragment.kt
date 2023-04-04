@@ -1,27 +1,33 @@
 package com.example.gptbros.ui.home
 
-import android.content.ContentValues
+//import android.widget.Button
+
+
+// import android.support.v7.app.AppCompatActivity
+
+import android.content.ContentValues.TAG
+import android.content.Intent
+import android.media.AudioManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-//import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.gptbros.databinding.FragmentHomeBinding
-
-
-import android.media.AudioManager
-import android.os.Build
-import android.util.Log
-// import android.support.v7.app.AppCompatActivity
-
-import androidx.annotation.RequiresApi
+import com.example.gptbros.BuildConfig
 import com.example.gptbros.R
-import com.google.auth.oauth2.GoogleCredentials
+import com.example.gptbros.databinding.FragmentHomeBinding
+import com.example.gptbros.ui.MainActivity
 import com.google.cloud.speech.v1.*
+import java.io.*
 
 
 class HomeFragment : Fragment() {
@@ -41,12 +47,13 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private fun getSpeechClient(): SpeechClient {
-       return  activity?.applicationContext?.resources?.openRawResource(R.raw.credential).use {
-            SpeechClient.create(
-                SpeechSettings.newBuilder()
-                    .setCredentialsProvider { GoogleCredentials.fromStream(it) }
-                    .build())
-        }
+        return SpeechClient.create()
+//           activity?.applicationContext?.resources?.openRawResource(R.raw.credential).use {
+//            SpeechClient.create(
+//                SpeechSettings.newBuilder()
+//                    .setCredentialsProvider { }
+//                    .build())
+//        }
     }
 
 
@@ -104,14 +111,12 @@ class HomeFragment : Fragment() {
 //        binding.textHome.text="This is an exceptionally hardcoded string"
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
-        val textView: TextView = binding.textHome
-        homeViewModel._speechClient.value = getSpeechClient()
-        homeViewModel._recFilePath.value = activity!!.getExternalFilesDir("rec").toString() + "Baker Systems Engineering.m4a"
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-
-
-        }
+        val recordingName = "BakerSystemsEngineering.m4a"
+            homeViewModel.callAPIs(File(Environment.getExternalStorageDirectory().absolutePath + "/"+ recordingName))
+        //Recording stuff
+//        homeViewModel.speechClient = getSpeechClient()
+//        //activity!!.getExternalFilesDir("rec").toString() + "/BakerSystemsEngineering.m4a"
+//        askForPermissions()
 
 //        binding.buttonRecord.setOnClickListener {
 //            Toast.makeText(view.context, "New exercise will be generated", Toast.LENGTH_SHORT).show()
@@ -123,6 +128,27 @@ class HomeFragment : Fragment() {
 
 
 //        binding.buttonRecord.setBackgroundColor(Color.RED)
+    }
+
+    fun askForPermissions() {
+        //we know context will be non null because this function is only called when view is on screen
+        if(context != null && activity != null && activity is MainActivity) {
+            val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(activity!!, permissions,0)
+        } else {
+            Log.e(TAG, "Something went wrong when asking for permissions!")
+        }
+
+        val uri = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            startActivity(
+                Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    uri
+                )
+            )
+        }
     }
 
 
