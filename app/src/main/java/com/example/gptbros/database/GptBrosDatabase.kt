@@ -3,12 +3,9 @@ package com.example.gptbros.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.gptbros.model.Recording
-import com.example.gptbros.model.Session
-import com.example.gptbros.model.Summary
-import com.example.gptbros.model.Transcription
+import com.example.gptbros.model.*
 
-@Database(entities = [Session::class, Recording::class, Transcription::class, Summary::class], version = 1)
+@Database(entities = [Session::class, Recording::class, Transcription::class, Summary::class, wipeClass::class], version = 5)
 @TypeConverters(GptBrosTypeConverters::class)
 abstract class GptBrosDatabase : RoomDatabase(){
 

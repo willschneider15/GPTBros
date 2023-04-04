@@ -1,6 +1,7 @@
 package com.example.gptbros.utils
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -12,74 +13,49 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
-class AudioManager(private val context: Context) {
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import com.example.gptbros.ui.MainActivity
+import java.io.IOException
 
-    private var mediaRecorder: MediaRecorder? = null
+
+class AudioManager() {
+
+    private lateinit var mediaRecorder: MediaRecorder
     private var mediaPlayer: MediaPlayer? = null
     private var fileLocation: String = ""
+    private var output: String? = null
+    private var TAG = "AudioManager"
+    var isRecording = false
 
 
-//    fun startPlayback(id: Int): Boolean {
-//        val path = filePathForId(id)
-//        if (File(path).exists()) {
-//            mediaPlayer = MediaPlayer()
-//            mediaPlayer?.setDataSource(path)
-//            mediaPlayer?.prepare()
-//            mediaPlayer?.start()
-//            return true
-//        }
-//        return false
-//    }
-
-//    fun stopPlayback() {
-//        mediaPlayer?.stop()
-//        mediaPlayer?.release()
-//        mediaPlayer = null
-//    }
-
-    private fun filePathForId(id: Int): String { //Once Kotlin has proper UInt type change this
-//        return Environment.getExternalStorageDirectory().absolutePath + "/$id.aac"
-        Log.d( "Audio Manger",context.getExternalFilesDir(null)!!.absolutePath.toString() + "/$id.aac")
-        return context.getExternalFilesDir(null)!!.absolutePath.toString() + "/$id.aac"
-    }
-
-    fun startRecording(id: Int): Boolean {
-
-        //check the device has a microphone
-        if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)) {
-
-            //create new instance of MediaRecorder
-            mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                MediaRecorder(context)
+    fun startRecording(recordingName : String, recordingCategory: String, context: Context) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mediaRecorder = MediaRecorder(context)
             } else {
-                @Suppress("DEPRECATION")
-                MediaRecorder()
+                //use older constructor if needed THIS IS NOT TESTED
+                mediaRecorder = MediaRecorder()
             }
-
-            //specify source of audio (Microphone)
-            mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-
-            //specify file type and compression format
-            mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
-            mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-
-            //specify audio sampling rate and encoding bit rate (48kHz and 128kHz respectively)
-            mediaRecorder?.setAudioSamplingRate(48000)
-            mediaRecorder?.setAudioEncodingBitRate(128000)
-
-            //specify where to save
-            fileLocation = filePathForId(id)
-            mediaRecorder?.setOutputFile(fileLocation)
-            //filePathForId(id)
-
-
-            //record
-            mediaRecorder?.prepare()
-            mediaRecorder?.start()
-
-            return true
-        } else {
-            return false
+            val cw : ContextWrapper = ContextWrapper(context)
+            output = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ recordingName + ".acc"
+            } else {
+                Environment.getExternalStorageDirectory().absolutePath + "/"+ recordingName + ".acc"
+            }
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            mediaRecorder.setOutputFile(output)
+            Log.d(TAG,output!!.toString())
+            mediaRecorder.prepare()
+            mediaRecorder.start()
+            isRecording = true
+        }catch (e : java.lang.IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
@@ -94,11 +70,8 @@ class AudioManager(private val context: Context) {
 //            }
 //        }
 
-
-        mediaRecorder?.stop()
-        mediaRecorder?.release()
-        mediaRecorder = null
+        mediaRecorder.stop()
+        isRecording = false
+        mediaRecorder.release()
     }
-
-
 }

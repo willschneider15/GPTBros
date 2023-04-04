@@ -17,5 +17,5 @@ data class Transcription(
     @PrimaryKey val transcriptionId : UUID,
     val sessionId : UUID,
     val status : Status,
-    val content : String
+    val content : String,
 )

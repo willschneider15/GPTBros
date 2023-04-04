@@ -15,7 +15,5 @@ import java.util.UUID
 data class Recording(
     @PrimaryKey val recordingId : UUID,
     val sessionId : UUID,
-    val fileName : String,
-    val className : String,
     val status : Status,
 )
