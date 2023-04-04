@@ -109,6 +109,14 @@ class FolderViewModel : ViewModel() {
         }
     }
 
+    fun removeSession(sessionUUID: UUID) {
+        viewModelScope.launch {
+            val session : Session = gptBrosRepository.getSession(sessionUUID)
+            gptBrosRepository.deleteSession(session)
+        }
+
+    }
+
 //    suspend fun deleteSessionItem(uid : UUID){
 //        var session = gptBrosRepository.getSession(uid)
 //        gptBrosRepository.deleteSession(session)
