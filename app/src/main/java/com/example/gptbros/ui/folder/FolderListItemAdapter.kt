@@ -14,7 +14,8 @@ import java.util.*
 
 class FolderListItemAdapter(
     private val context: Context,
-    private val folderListItems: List<FolderListItem>
+    private val folderListItems: List<FolderListItem>,
+    private val updateDB : (sessionUUID : UUID) -> Unit
 ) : RecyclerView.Adapter<FolderListItemAdapter.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -30,9 +31,9 @@ class FolderListItemAdapter(
         holder.className.text = folderListItem.className
         holder.recordedDate.text = formatDate(folderListItem.date)
 
-//        holder.deleteButton.setOnClickListener {
-//            actionListener.onDeleteSession(folderListItem.sessionId)
-//        }
+        holder.deleteButton.setOnClickListener {
+            updateDB(folderListItems[position].sessionId)
+        }
     }
 
     override fun getItemCount(): Int {
