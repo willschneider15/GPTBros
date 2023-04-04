@@ -10,4 +10,11 @@ data class FolderListItem(
     val Stage: Stage,
     val Status: Status,
     val date: Date,
-)
+) {
+    //THIS WILL CAUSE BUGS, IN THE LONG TERM FIND A BETTER WAY TO EXPRESS AN EMPTY FOLDER ITEM
+    companion object{
+        fun emptyFolderListItem () : FolderListItem{
+            return FolderListItem(UUID.randomUUID(), "", "", Stage.SUMMARIZING, Status.ERROR, Date())
+        }
+    }
+}

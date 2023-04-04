@@ -66,6 +66,8 @@ class GptBrosRepository private constructor(context: Context) {
     suspend fun getRecording(sessionId:UUID) = database.gptBrosDao().getRecording(sessionId)
     suspend fun getTranscription(sessionId: UUID) = database.gptBrosDao().getTranscription(sessionId)
     suspend fun getSession(sessionId: UUID) = database.gptBrosDao().getSession(sessionId)
+
+    fun getSummaryFlow(sessionId: UUID) = database.gptBrosDao().getSummaryFlow(sessionId)
     fun getSummaries() = database.gptBrosDao().getSummaries()
 
     companion object {

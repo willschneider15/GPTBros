@@ -13,9 +13,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gptbros.R
 import com.example.gptbros.databinding.FragmentFolderBinding
 import com.example.gptbros.model.FolderListItem
+
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -58,7 +61,11 @@ class FolderFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     folderViewModel.folderListItems.collect { items ->
-                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items)
+                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items) {
+                            sessionUUID -> findNavController().navigate(
+                                FolderFragmentDirections.showSummaryDetail(sessionUUID)
+                            )
+                        }
                     }
                 }
             }

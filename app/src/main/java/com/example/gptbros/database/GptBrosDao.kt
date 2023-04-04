@@ -38,6 +38,9 @@ interface GptBrosDao {
     //":sessionId" denotes the sessionId parameter in the method
     @Query("SELECT * FROM summary WHERE sessionId=(:sessionId)")
     suspend fun getSummary(sessionId : UUID) : Summary
+
+    @Query("SELECT * FROM summary WHERE sessionId=(:sessionId)")
+    fun getSummaryFlow(sessionId : UUID) : Flow<Summary>
     @Query("SELECT * FROM recording WHERE sessionId=(:sessionId)")
     suspend fun getRecording(sessionId : UUID) : Recording
     @Query("SELECT * FROM transcription WHERE sessionId=(:sessionId)")
