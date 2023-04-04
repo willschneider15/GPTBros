@@ -108,4 +108,14 @@ class FolderViewModel : ViewModel() {
             Log.d(tag, content)
         }
     }
+
+//    suspend fun deleteSessionItem(uid : UUID){
+//        var session = gptBrosRepository.getSession(uid)
+//        gptBrosRepository.deleteSession(session)
+//    }
+
+//    fun updateLabelSessionItem(){
+//
+//    }
+
 }

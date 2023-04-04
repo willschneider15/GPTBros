@@ -5,4 +5,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="recording_title">Enter a title for your recording</string>
     <string name="recording_catagory">Enter the category for your recording</string>
+    <string name="edit_button_description">Edit the title of the summary</string>
+    <string name="delete_button_description">Delete the summary</string>
 </resources>

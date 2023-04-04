@@ -1,9 +1,6 @@
 package com.example.gptbros.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.gptbros.model.Recording
 import com.example.gptbros.model.Session
 import com.example.gptbros.model.Summary
@@ -45,6 +42,15 @@ interface GptBrosDao {
 
     @Query("SELECT * FROM session WHERE sessionId=(:sessionId)")
     suspend fun getSession(sessionId : UUID) : Session
+
+    // Add delete methods
+    @Delete
+    suspend fun deleteSession(session: Session)
+
+
+
+
+
 
     @Query("SELECT * FROM session")
     fun getSessions() : Flow<List<Session>>
