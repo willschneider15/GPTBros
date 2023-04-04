@@ -56,6 +56,9 @@ class FolderFragment : Fragment() {
                         binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items) {
                             folderViewModel.removeSession(it)
                         }
+                            folderViewModel.editLabel(it)
+                        }
+
                     }
                 }
             }
