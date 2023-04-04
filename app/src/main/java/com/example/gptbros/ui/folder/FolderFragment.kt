@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gptbros.databinding.FragmentFolderBinding
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class FolderFragment : Fragment() {
 
@@ -52,7 +53,10 @@ class FolderFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     folderViewModel.folderListItems.collect { items ->
-                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items)
+                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items) {
+                            folderViewModel.editLabel(it)
+                        }
+
                     }
                 }
             }

@@ -109,6 +109,14 @@ class FolderViewModel : ViewModel() {
         }
     }
 
+    fun editLabel(session : UUID) {
+        viewModelScope.launch {
+            val session : Session = gptBrosRepository.getSession(session)
+            gptBrosRepository.updateSession(session.copy(label = "THIS HAS BEEN CHANGED"))
+
+        }
+    }
+
 //    suspend fun deleteSessionItem(uid : UUID){
 //        var session = gptBrosRepository.getSession(uid)
 //        gptBrosRepository.deleteSession(session)

@@ -10,4 +10,6 @@
     <string name="session_name_hint">Enter session name</string>
     <string name="submit_button_label">Submit</string>
     <string name="session_name_error">Session name cannot be empty</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -14,7 +14,8 @@ import java.util.*
 
 class FolderListItemAdapter(
     private val context: Context,
-    private val folderListItems: List<FolderListItem>
+    private val folderListItems: List<FolderListItem>,
+    private val onEditLabel : (sessionId: UUID) -> Unit
 ) : RecyclerView.Adapter<FolderListItemAdapter.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -27,8 +28,11 @@ class FolderListItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val folderListItem = folderListItems[position]
 
-        holder.className.text = folderListItem.className
+        holder.className.text = folderListItem.SummaryName
         holder.recordedDate.text = formatDate(folderListItem.date)
+        holder.editButton.setOnClickListener {
+            onEditLabel(folderListItems[position].sessionId)
+        }
 
 //        holder.deleteButton.setOnClickListener {
 //            actionListener.onDeleteSession(folderListItem.sessionId)
@@ -49,5 +53,6 @@ class FolderListItemAdapter(
         val className: TextView = itemView.findViewById(R.id.class_name)
         val recordedDate: TextView = itemView.findViewById(R.id.recorded_date)
         val deleteButton: ImageButton = itemView.findViewById(R.id.delete_button)
+        val editButton: ImageButton = itemView.findViewById(R.id.edit_button)
     }
 }
