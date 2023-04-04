@@ -54,6 +54,8 @@ class GptBrosRepository private constructor(context: Context) {
     fun updateRecording(recording: Recording) = coroutineScope.launch { database.gptBrosDao().updateRecording(recording) }
 
 
+    fun deleteSession(session: Session) = coroutineScope.launch { database.gptBrosDao().deleteSession(session) }
+
     suspend fun getSessionStatus(sessionVar: Session) : Status{
         //This is essentially just a switch
         return when(sessionVar.stage) {
