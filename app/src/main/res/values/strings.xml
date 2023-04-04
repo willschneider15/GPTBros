@@ -7,4 +7,7 @@
     <string name="recording_catagory">Enter the category for your recording</string>
     <string name="edit_button_description">Edit the title of the summary</string>
     <string name="delete_button_description">Delete the summary</string>
+    <string name="session_name_hint">Enter session name</string>
+    <string name="submit_button_label">Submit</string>
+    <string name="session_name_error">Session name cannot be empty</string>
 </resources>

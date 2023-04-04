@@ -39,6 +39,7 @@ class FolderListItemAdapter(
         return folderListItems.size
     }
 
+
     private fun formatDate(date: Date): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormat.format(date)
