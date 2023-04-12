@@ -1,36 +1,52 @@
 package com.example.gptbros.utils
 
 import com.example.gptbros.model.api.TranscriptItem
+import com.example.gptbros.ui.home.HomeViewModel
 import com.google.cloud.speech.v1.RecognitionAudio
 import com.google.cloud.speech.v1.RecognitionConfig
-import com.google.cloud.speech.v1.RecognizeRequest
 import com.google.cloud.speech.v1.SpeechClient
 import com.google.protobuf.ByteString
+import kotlinx.coroutines.delay
 
-class TranscriptAPI {
-    fun fetchTranscript(fileByteString: ByteString, speechClient: SpeechClient): TranscriptItem {
-        val req = RecognizeRequest.newBuilder()
-            .setConfig(
+// Imports the Google Cloud client library
+class TranscriptAPI(
+    var byteString: ByteString,
+    var speechClient: SpeechClient
+) {
+    suspend fun fetchTranscript(): TranscriptItem {
+        // Instantiates a client with GOOGLE_APPLICATION_CREDENTIALS
+        speechClient.use { speech ->
+
+            // Configure remote file request for FLAC
+            val config =
                 RecognitionConfig.newBuilder()
-                    .setEncoding(RecognitionConfig.AudioEncoding.AMR_WB)
+                    .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
                     .setLanguageCode("en-US")
                     .setSampleRateHertz(16000)
                     .build()
-            )
-            .setAudio(
-                RecognitionAudio.newBuilder()
-                    .setContent(fileByteString)
-                    .build()
-            )
-            .build()
-        val response = speechClient.recognize(req)
+            val audio =
+                RecognitionAudio.newBuilder().setUriBytes(
+                    byteString
+                ).build()
 
-        val results = response.resultsList
-        val alternative = results[0].alternativesList[0]
+            // Use non-blocking call for getting file transcription
+            val response =
+                speech.longRunningRecognizeAsync(config, audio)
+            while (!response.isDone) {
+                println("Waiting for response...")
+                delay(10000)
+            }
+            val results =
+                response.get().resultsList
 
-        return TranscriptItem(alternative.transcript, alternative.confidence)
+            // There can be several alternative transcripts for a given chunk of speech. Just use the
+            // first (most likely) one here.
+            val alternative =
+                results[0].alternativesList[0]
+            return TranscriptItem(alternative.transcript, alternative.confidence)
+        }
+
     }
-
 }
 
 

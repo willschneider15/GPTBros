@@ -11,7 +11,6 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +25,10 @@ import com.example.gptbros.BuildConfig
 import com.example.gptbros.R
 import com.example.gptbros.databinding.FragmentHomeBinding
 import com.example.gptbros.ui.MainActivity
+import com.google.api.gax.core.FixedCredentialsProvider
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.speech.v1.*
+import com.google.cloud.speech.v1.stub.GrpcSpeechStub
 import java.io.*
 
 
@@ -46,15 +48,8 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private fun getSpeechClient(): SpeechClient {
-        return SpeechClient.create()
-//           activity?.applicationContext?.resources?.openRawResource(R.raw.credential).use {
-//            SpeechClient.create(
-//                SpeechSettings.newBuilder()
-//                    .setCredentialsProvider { }
-//                    .build())
-//        }
-    }
+    private var speechClient: SpeechClient? = null
+    private var grpcStub: GrpcSpeechStub? = null
 
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -111,8 +106,21 @@ class HomeFragment : Fragment() {
 //        binding.textHome.text="This is an exceptionally hardcoded string"
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
-        val recordingName = "BakerSystemsEngineering.m4a"
-            homeViewModel.callAPIs(File(Environment.getExternalStorageDirectory().absolutePath + "/"+ recordingName))
+        try {
+            val credentials: GoogleCredentials = GoogleCredentials.fromStream(resources.openRawResource(
+                R.raw.credential))
+                .createScoped("https://www.googleapis.com/auth/cloud-platform")
+
+            val speechSettings : SpeechSettings = SpeechSettings.newBuilder()
+                .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
+                .build()
+
+            speechClient = SpeechClient.create(speechSettings)
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        homeViewModel.callAPIs(speechClient)
         //Recording stuff
 //        homeViewModel.speechClient = getSpeechClient()
 //        //activity!!.getExternalFilesDir("rec").toString() + "/BakerSystemsEngineering.m4a"
@@ -227,6 +235,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        if (speechClient != null) {
+            speechClient!!.close()
+        }
         _binding = null
     }
 }

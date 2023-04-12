@@ -7,15 +7,12 @@ import com.aallam.openai.client.OpenAI
 import com.example.gptbros.model.api.SummaryItem
 
 
-const val API_KEY = "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"
+const val API_KEY = "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"
 
 class SummaryAPI {
     private val openAI = OpenAI(API_KEY)
     private var transcript: String = ""
-        get() {
-            return field
-        }
-        set(value) { field = value }
+
 
     @OptIn(BetaOpenAI::class)
     fun chatRequest() = ChatCompletionRequest(
@@ -38,7 +35,7 @@ class SummaryAPI {
     }
 
     @OptIn(BetaOpenAI::class)
-    suspend fun fetchSummary(text: String): SummaryItem {
+    suspend fun fetchSummary(text: String) : SummaryItem {
         transcript = text
         val chatRequest = chatRequest()
         return makeSumItem(openAI.chatCompletion(chatRequest))

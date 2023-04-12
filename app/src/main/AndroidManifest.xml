@@ -19,6 +19,8 @@
         android:theme="@style/Theme.GPTBros"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         tools:targetApi="31">
 
         <activity

@@ -76,8 +76,10 @@ dependencies {
     implementation 'com.aallam.openai:openai-client'
     implementation 'io.ktor:ktor-client-okhttp'
 
-    implementation 'io.grpc:grpc-okhttp:1.32.2'
-    implementation 'com.google.cloud:google-cloud-speech:4.0.0'
+    implementation 'com.google.cloud:google-cloud-speech:2.4.0'
+    implementation 'com.google.auth:google-auth-library-oauth2-http:0.21.1'
+    implementation "io.grpc:grpc-okhttp:1.38.1"
+    implementation "io.grpc:grpc-stub:1.38.1"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     implementation 'androidx.room:room-ktx:2.5.1'
