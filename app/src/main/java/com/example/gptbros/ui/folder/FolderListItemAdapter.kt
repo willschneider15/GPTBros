@@ -15,7 +15,7 @@ import java.util.*
 class FolderListItemAdapter(
     private val context: Context,
     private val folderListItems: List<FolderListItem>,
-    private val updateDB : (sessionUUID : UUID) -> Unit
+    private val updateDB : (sessionUUID : UUID) -> Unit,
     private val onEditLabel : (sessionId: UUID) -> Unit
 ) : RecyclerView.Adapter<FolderListItemAdapter.ViewHolder>() {
 

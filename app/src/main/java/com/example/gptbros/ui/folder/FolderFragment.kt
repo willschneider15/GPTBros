@@ -53,9 +53,7 @@ class FolderFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     folderViewModel.folderListItems.collect { items ->
-                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items) {
-                            folderViewModel.removeSession(it)
-                        }
+                        binding.folderRecyclerView.adapter = FolderListItemAdapter(requireContext(), items, {e->folderViewModel.removeSession(e)}) {
                             folderViewModel.editLabel(it)
                         }
 
