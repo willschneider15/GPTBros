@@ -5,6 +5,10 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
 }
 
+def apikeyPropertiesFile = rootProject.file("app/apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     namespace 'com.example.gptbros'
     compileSdk 33
@@ -17,6 +21,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // should correspond to key/value pairs inside the file
+        buildConfigField("String", "OPENAI_KEY", apikeyProperties['OPENAI_KEY'])
+        buildConfigField("String", "GOOGLEAPI_KEY", apikeyProperties['GOOGLEAPI_KEY'])
     }
 
     buildTypes {
@@ -53,6 +61,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-auth:21.0.3'
+    implementation platform('com.aallam.openai:openai-client-bom:3.2.0')
+    implementation 'com.aallam.openai:openai-client'
+    implementation 'io.ktor:ktor-client-okhttp'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
     implementation 'androidx.room:room-ktx:2.5.1'
     implementation 'androidx.room:room-runtime:2.5.1'
