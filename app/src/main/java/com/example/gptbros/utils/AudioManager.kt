@@ -3,6 +3,7 @@ package com.example.gptbros.utils
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
+import android.media.AudioFormat
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
@@ -36,13 +37,13 @@ class AudioManager() {
             }
             val cw : ContextWrapper = ContextWrapper(context)
             output = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ recordingName + ".acc"
+                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ recordingName + ".webm"
             } else {
-                Environment.getExternalStorageDirectory().absolutePath + "/"+ recordingName + ".acc"
+                Environment.getExternalStorageDirectory().absolutePath + "/"+ recordingName + ".webm"
             }
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            mediaRecorder.setOutputFormat(AudioFormat.ENCODING_PCM_16BIT);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             mediaRecorder.setOutputFile(output)
             Log.d(TAG,output!!.toString())
             mediaRecorder.prepare()

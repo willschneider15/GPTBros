@@ -3,14 +3,23 @@ package com.example.gptbros.model
 import android.content.Context
 import androidx.room.Room
 import com.example.gptbros.database.GptBrosDatabase
+import com.example.gptbros.network.WhisperApi
+import com.squareup.okhttp.RequestBody
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.create
+import retrofit2.http.Part
 import java.util.*
 
 private const val DATABASE_NAME = "gpt-bros-database"
 class GptBrosRepository private constructor(context: Context) {
+    private val whisperApi : WhisperApi
     private val coroutineScope : CoroutineScope = GlobalScope
     private val database : GptBrosDatabase = Room
         .databaseBuilder(
@@ -23,12 +32,21 @@ class GptBrosRepository private constructor(context: Context) {
         //.createFromAsset(DATABASE_NAME) this preloads data from a sql file
         .build()
 
+    init {
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl("https://api.openai.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        whisperApi = retrofit.create<WhisperApi>()
+    }
+
     // using equals in a function definition is like using a one-liner func def
     fun getSessions(): Flow<List<Session>> = database.gptBrosDao().getSessions()
     fun insertSession(session: Session) = coroutineScope.launch { database.gptBrosDao().insertSession(session) }
     fun insertRecording(recording: Recording) = coroutineScope.launch { database.gptBrosDao().insertRecording(recording) }
     fun insertTranscription(transcription: Transcription) = coroutineScope.launch { database.gptBrosDao().insertTranscription(transcription) }
     fun insertSummary(summary: Summary) = coroutineScope.launch { database.gptBrosDao().insertSummary(summary) }
+    suspend fun transcribeAudio(partMap : MutableMap<String, RequestBody>) = whisperApi.transcribeAudio(partMap)
 
     fun insertSessionAndChildren(session: Session, recording: Recording, transcription: Transcription, summary: Summary)  {
         //Due to the foreign key constraint we must make sure a recording's corresponding parent

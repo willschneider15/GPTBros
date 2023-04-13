@@ -10,13 +10,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptbros.model.*
 import com.example.gptbros.model.api.SummaryItem
+import com.example.gptbros.network.WhisperApi
 import com.example.gptbros.utils.AudioManager
 import com.example.gptbros.utils.SummaryAPI
+import com.squareup.okhttp.MediaType
+import com.squareup.okhttp.RequestBody
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.create
 import java.util.Date
 import java.util.UUID
 
+private val TAG : String = "HomeViewModel"
 class HomeViewModel : ViewModel() {
     private val gptBrosRepository = GptBrosRepository.get()
     private val _text = MutableLiveData<String>().apply {
@@ -62,7 +72,8 @@ class HomeViewModel : ViewModel() {
             gptBrosRepository.updateTranscription(transcription.copy(status = Status.IN_PROGRESS))
 
             val filePath : String = Environment.getExternalStorageDirectory().absolutePath +
-                     "/"+ session.label + ".acc"
+                     "/"+ session.label + ".webm"
+            Log.d(TAG, "This ist he file path I'm using in HomeViewModel"+filePath)
 
             val transcriptionRes  = transcribeRecording(filePath)
 
@@ -76,19 +87,35 @@ class HomeViewModel : ViewModel() {
         }
     }
     suspend fun transcribeRecording(filePath : String) : String {
+        Log.d(TAG, "retrofit start")
+        try {
+            val map: MutableMap<String, RequestBody> = mutableMapOf()
+            val filePathParam : RequestBody = RequestBody.create(MediaType.parse("text/plain"), filePath)
+            val modelName = RequestBody.create(MediaType.parse("text/plain"), "whisper-1")
+            var text = RequestBody.create(MediaType.parse("text/plain"), "text")
+            map["file"] = filePathParam
+            map["model"] = modelName
+            map["response_format"] = text
+            val response = gptBrosRepository.transcribeAudio(map)
+            Log.d(TAG, "response recieved: $response")
+        } catch(ex: java.lang.Exception) {
+            Log.e(TAG, "Failed to fetch audio recording",ex)
+        }
         return "test"
+
     }
 
     suspend fun summarizeTranscription(transcription : String) : String {
-        val summaryAPI = SummaryAPI()
-        lateinit var summaryItem: SummaryItem
-        try {
-            summaryItem = summaryAPI.fetchSummary("transcriptItem.content")
-            Log.d(ContentValues.TAG, "Summary response: " + summaryItem.content)
-        } catch (e: java.lang.Exception) {
-            Log.e(ContentValues.TAG, "Failed to fetch summary api response", e)
-        }
-        return summaryItem.content
+//        val summaryAPI = SummaryAPI()
+//        lateinit var summaryItem: SummaryItem
+//        try {
+//            summaryItem = summaryAPI.fetchSummary("transcriptItem.content")
+//            Log.d(ContentValues.TAG, "Summary response: " + summaryItem.content)
+//        } catch (e: java.lang.Exception) {
+//            Log.e(ContentValues.TAG, "Failed to fetch summary api response", e)
+//        }
+//        return summaryItem.content
+        return  "test";
     }
 
 
