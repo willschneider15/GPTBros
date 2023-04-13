@@ -1,5 +1,6 @@
 package com.example.gptbros.ui.home
 
+import android.content.ContentValues
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
@@ -8,7 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptbros.model.*
+import com.example.gptbros.model.api.SummaryItem
 import com.example.gptbros.utils.AudioManager
+import com.example.gptbros.utils.SummaryAPI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -77,7 +80,15 @@ class HomeViewModel : ViewModel() {
     }
 
     suspend fun summarizeTranscription(transcription : String) : String {
-        return "test"
+        val summaryAPI = SummaryAPI()
+        lateinit var summaryItem: SummaryItem
+        try {
+            summaryItem = summaryAPI.fetchSummary("transcriptItem.content")
+            Log.d(ContentValues.TAG, "Summary response: " + summaryItem.content)
+        } catch (e: java.lang.Exception) {
+            Log.e(ContentValues.TAG, "Failed to fetch summary api response", e)
+        }
+        return summaryItem.content
     }
 
 
