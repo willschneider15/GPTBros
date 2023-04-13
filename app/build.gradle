@@ -63,8 +63,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.3'
     implementation platform('com.aallam.openai:openai-client-bom:3.2.0')
     implementation 'com.aallam.openai:openai-client'
-    implementation 'io.ktor:ktor-client-okhttp'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     implementation 'androidx.room:room-ktx:2.5.1'
     implementation 'androidx.room:room-runtime:2.5.1'
