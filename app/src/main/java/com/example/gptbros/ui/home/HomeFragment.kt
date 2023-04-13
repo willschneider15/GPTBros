@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
                     //Call the approiate vm methods
                     audioManager?.stopRecording()
                     homeViewModel.onStopRecordUpdateDb()
-                    homeViewModel.summarizeRecording()
+                    homeViewModel.summarizeRecording(requireContext())
                     Log.d(TAG, "Stop recording")
                     //binding.buttonRecord.setBackgroundColor(activity!!.getColor(R.color.white))
                 }

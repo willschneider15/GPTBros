@@ -1,6 +1,26 @@
 package com.example.gptbros.ui.home
 
+
+import com.google.cloud.speech.v1.SpeechClient
+import com.google.cloud.speech.v1.SpeechSettings
+import com.google.auth.Credentials
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.api.gax.core.FixedCredentialsProvider
+
+
+import com.google.cloud.speech.v1.RecognitionAudio
+import com.google.cloud.speech.v1.RecognitionConfig
+import com.google.cloud.speech.v1.RecognizeRequest
+import com.google.protobuf.ByteString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+
+import java.io.FileInputStream
 import android.content.ContentValues
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
@@ -8,17 +28,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gptbros.R
 import com.example.gptbros.model.*
 import com.example.gptbros.model.api.SummaryItem
 import com.example.gptbros.utils.AudioManager
 import com.example.gptbros.utils.SummaryAPI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.InputStream
 import java.util.Date
 import java.util.UUID
 
 class HomeViewModel : ViewModel() {
     private val gptBrosRepository = GptBrosRepository.get()
+
+
     private val _text = MutableLiveData<String>().apply {
         value = "Begin the recording at the start of class"
     }
@@ -52,7 +76,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun summarizeRecording() {
+    fun summarizeRecording(context: Context) {
         //Look into using something other than global scope as this is bad practice for api calls
         //Also look into transactions so process destruction doesn't corrupt db
         GlobalScope.launch {
@@ -61,10 +85,14 @@ class HomeViewModel : ViewModel() {
             val summary : Summary = gptBrosRepository.getSummary(sessionUUID)
             gptBrosRepository.updateTranscription(transcription.copy(status = Status.IN_PROGRESS))
 
-            val filePath : String = Environment.getExternalStorageDirectory().absolutePath +
-                     "/"+ session.label + ".acc"
+            val cw : ContextWrapper = ContextWrapper(context)
+            val filePath : String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ session.label + ".acc"
+            } else {
+                Environment.getExternalStorageDirectory().absolutePath + "/"+ session.label + ".acc"
+            }
 
-            val transcriptionRes  = transcribeRecording(filePath)
+            val transcriptionRes  = transcribeRecording(context,filePath)
 
             //put result in transcribe.copy(content=)
             gptBrosRepository.updateTranscription(transcription.copy(content = transcriptionRes, status = Status.FINISHED))
@@ -72,12 +100,45 @@ class HomeViewModel : ViewModel() {
 
             //put result in summary.copy
             val summaryRes = summarizeTranscription(transcriptionRes)
+            Log.d(ContentValues.TAG, "Summary response: " + summaryRes)
             gptBrosRepository.updateSummary(summary.copy(content = summaryRes, status = Status.FINISHED))
         }
     }
-    suspend fun transcribeRecording(filePath : String) : String {
-        return "test"
+
+    private fun createSpeechClient(context: Context): SpeechClient {
+        val settingsBuilder = SpeechSettings.newBuilder()
+        val credentialsStream: InputStream = context.resources.openRawResource(R.raw.credential)
+
+        val credentials = GoogleCredentials.fromStream(credentialsStream)
+        settingsBuilder.setCredentialsProvider(FixedCredentialsProvider.create(credentials))
+
+        return SpeechClient.create(settingsBuilder.build())
     }
+    suspend fun transcribeRecording(context: Context, filePath: String): String {
+        return withContext(Dispatchers.IO) {
+            val speechClient = createSpeechClient(context)
+            val audio = RecognitionAudio.newBuilder()
+                .setContent(ByteString.copyFrom(File(filePath).readBytes()))
+                .build()
+
+            val config = RecognitionConfig.newBuilder()
+                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                .setLanguageCode("en-US")
+                .setSampleRateHertz(16000)
+                .build()
+
+            val request = RecognizeRequest.newBuilder()
+                .setAudio(audio)
+                .setConfig(config)
+                .build()
+
+            val response = speechClient.recognize(request)
+            val transcript = response.resultsList.joinToString(" ") { it.alternativesList[0].transcript }
+            speechClient.shutdown()
+            transcript
+        }
+    }
+
 
     suspend fun summarizeTranscription(transcription : String) : String {
         val summaryAPI = SummaryAPI()
