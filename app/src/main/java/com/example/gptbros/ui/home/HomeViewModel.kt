@@ -39,6 +39,12 @@ import java.io.InputStream
 import java.util.Date
 import java.util.UUID
 
+
+import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
+
+
+
 class HomeViewModel : ViewModel() {
     private val gptBrosRepository = GptBrosRepository.get()
 
@@ -87,9 +93,9 @@ class HomeViewModel : ViewModel() {
 
             val cw : ContextWrapper = ContextWrapper(context)
             val filePath : String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ session.label + ".acc"
+                cw.getExternalFilesDir(Environment.DIRECTORY_PODCASTS).toString() + "/"+ session.label + ".wav"
             } else {
-                Environment.getExternalStorageDirectory().absolutePath + "/"+ session.label + ".acc"
+                Environment.getExternalStorageDirectory().absolutePath + "/"+ session.label + ".wav"
             }
 
             val transcriptionRes  = transcribeRecording(context,filePath)
@@ -117,27 +123,39 @@ class HomeViewModel : ViewModel() {
     suspend fun transcribeRecording(context: Context, filePath: String): String {
         return withContext(Dispatchers.IO) {
             val speechClient = createSpeechClient(context)
-            val audio = RecognitionAudio.newBuilder()
-                .setContent(ByteString.copyFrom(File(filePath).readBytes()))
-                .build()
-
+            val data = (ByteString.copyFrom(File(filePath).readBytes()))
+            Log.d("TUT", "ByteString data size: ${data.size()}")
             val config = RecognitionConfig.newBuilder()
-                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                .setLanguageCode("en-US")
-                .setSampleRateHertz(16000)
+                        .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                        .setLanguageCode("en-US")
+                        .setSampleRateHertz(16000)
+                        .build()
+
+
+            val audio = RecognitionAudio.newBuilder()
+                .setContent(data)
                 .build()
 
-            val request = RecognizeRequest.newBuilder()
-                .setAudio(audio)
-                .setConfig(config)
-                .build()
 
-            val response = speechClient.recognize(request)
+            val response = speechClient.recognize(config, audio)
+
+            Log.d("TUT", "Response, count ${response.resultsCount}")
+            val results = response.resultsList
+            for (result in results) {
+                val alternative = result.getAlternativesList().get(0)
+                val text = alternative.getTranscript()
+                Log.d("TUT", "Transcription: $text")
+            }
+
             val transcript = response.resultsList.joinToString(" ") { it.alternativesList[0].transcript }
+            Log.d(ContentValues.TAG, "Transcrip response: " + transcript)
             speechClient.shutdown()
             transcript
         }
     }
+
+
+
 
 
     suspend fun summarizeTranscription(transcription : String) : String {

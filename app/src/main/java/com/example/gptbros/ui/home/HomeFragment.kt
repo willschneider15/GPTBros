@@ -38,36 +38,36 @@ class HomeFragment : Fragment() {
 
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.buttonRecord.setOnClickListener {
             //If the version is wrong just do nothing, in the future display some message
-                if(!checkPermissions() ) {
-                    askForPermissions() //assume they say yes
-                    return@setOnClickListener
-                }
-                if(audioManager?.isRecording == false) {
-                    val name = binding.recordingName.text.toString()
-                    val category = binding.recordingCatagory.text.toString()
-                    audioManager?.startRecording(name, category,activity!!)
-                    homeViewModel.onRecordUpdateDb(name, category)
-                    //this function can only be called when the ui in on screen (activity !=  null)
-                    //binding.buttonRecord.background (activity!!.getColor(R.color.red))
-                    Log.d(TAG, "Start recording")
-                } else if(audioManager?.isRecording == true){
-                    //Open diologue for name + group
-                    //Call the approiate vm methods
-                    audioManager?.stopRecording()
-                    homeViewModel.onStopRecordUpdateDb()
-                    homeViewModel.summarizeRecording(requireContext())
-                    Log.d(TAG, "Stop recording")
-                    //binding.buttonRecord.setBackgroundColor(activity!!.getColor(R.color.white))
-                }
+            if(!checkPermissions() ) {
+                askForPermissions() //assume they say yes
+                return@setOnClickListener
+            }
+            if(audioManager?.isRecording == false) {
+                val name = binding.recordingName.text.toString()
+                val category = binding.recordingCatagory.text.toString()
+                audioManager?.startRecording(name,activity!!)
+                homeViewModel.onRecordUpdateDb(name, category)
+                //this function can only be called when the ui in on screen (activity !=  null)
+                //binding.buttonRecord.background (activity!!.getColor(R.color.red))
+                Log.d(TAG, "Start recording")
+            } else if(audioManager?.isRecording == true){
+                //Open diologue for name + group
+                //Call the approiate vm methods
+                audioManager?.stopRecording()
+                homeViewModel.onStopRecordUpdateDb()
+                homeViewModel.summarizeRecording(requireContext())
+                Log.d(TAG, "Stop recording")
+                //binding.buttonRecord.setBackgroundColor(activity!!.getColor(R.color.white))
+            }
 
 
         }
