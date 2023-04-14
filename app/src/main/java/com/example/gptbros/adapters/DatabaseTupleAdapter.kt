@@ -1,6 +1,9 @@
 package com.example.gptbros.adapters
 
 import com.example.gptbros.model.*
+import com.example.gptbros.model.FolderListItem
+import com.example.gptbros.model.Session
+import com.example.gptbros.model.Status
 
 
 class DatabaseTupleAdapter {

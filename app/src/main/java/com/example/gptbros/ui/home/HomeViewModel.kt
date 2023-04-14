@@ -162,7 +162,7 @@ class HomeViewModel : ViewModel() {
         val summaryAPI = SummaryAPI()
         lateinit var summaryItem: SummaryItem
         try {
-            summaryItem = summaryAPI.fetchSummary("transcriptItem.content")
+            summaryItem = summaryAPI.fetchSummary(transcription)
             Log.d(ContentValues.TAG, "Summary response: " + summaryItem.content)
         } catch (e: java.lang.Exception) {
             Log.e(ContentValues.TAG, "Failed to fetch summary api response", e)

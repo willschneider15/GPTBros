@@ -7,6 +7,7 @@ import com.example.gptbros.model.Summary
 import com.example.gptbros.model.Transcription
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import java.util.stream.Stream
 
 @Dao
 interface GptBrosDao {
@@ -39,6 +40,16 @@ interface GptBrosDao {
     suspend fun getRecording(sessionId : UUID) : Recording
     @Query("SELECT * FROM transcription WHERE sessionId=(:sessionId)")
     suspend fun getTranscription(sessionId : UUID) : Transcription
+
+    @Query("SELECT * FROM session WHERE sessionId=(:sessionId)")
+     fun listenOnSession(sessionId : UUID) : Flow<Session>
+
+    @Query("SELECT * FROM summary WHERE sessionId=(:sessionId)")
+     fun listOnSummary(sessionId : UUID) : Flow<Summary>
+    @Query("SELECT * FROM recording WHERE sessionId=(:sessionId)")
+     fun listOnRecording(sessionId : UUID) : Flow<Recording>
+    @Query("SELECT * FROM transcription WHERE sessionId=(:sessionId)")
+     fun listOnTranscription(sessionId : UUID) : Flow<Transcription>
 
     @Query("SELECT * FROM session WHERE sessionId=(:sessionId)")
     suspend fun getSession(sessionId : UUID) : Session
