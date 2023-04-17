@@ -93,3 +93,4 @@ lint/tmp/
 .gradle/7.5/fileHashes/fileHashes.bin
 .gradle/7.5/fileHashes/fileHashes.lock
 .gradle/7.5/fileHashes/resourceHashesCache.bin
+app/apikey.properties
