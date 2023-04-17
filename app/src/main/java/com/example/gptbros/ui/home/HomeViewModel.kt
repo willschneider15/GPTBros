@@ -58,9 +58,7 @@ class HomeViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            //val summary : String =  getSummaries("TRANSCRIPT TEXT")
-            val summary = "Summary unimplemented"
-            Log.d("HomeViewModel", summary)
+            Log.d("HomeViewModel", "Home ViewModel Created")
         }
     }
 
@@ -111,7 +109,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun createSpeechClient(context: Context): SpeechClient {
+    fun createSpeechClient(context: Context): SpeechClient {
         val settingsBuilder = SpeechSettings.newBuilder()
         val credentialsStream: InputStream = context.resources.openRawResource(R.raw.credential)
 
@@ -153,10 +151,6 @@ class HomeViewModel : ViewModel() {
             transcript
         }
     }
-
-
-
-
 
     suspend fun summarizeTranscription(transcription : String) : String {
         val summaryAPI = SummaryAPI()
