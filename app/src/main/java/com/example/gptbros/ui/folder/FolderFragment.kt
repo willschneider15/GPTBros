@@ -17,7 +17,6 @@ import java.util.*
 class FolderFragment : Fragment() {
 
     private var _binding: FragmentFolderBinding? = null
-
     private val folderViewModel : FolderViewModel by viewModels()
     // This property is only valid between onCreateView and
     // onDestroyView.

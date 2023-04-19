@@ -11,10 +11,6 @@
         android:icon="@drawable/baseline_folder_24"
         android:title="Folder" />
 
-    <item
-        android:id="@+id/navigation_account"
-        android:icon="@drawable/baseline_perm_identity_24"
-        android:title="Account" />
 
 
 

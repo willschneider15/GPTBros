@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gptbros.R
 import com.example.gptbros.model.FolderListItem
@@ -38,6 +39,10 @@ class FolderListItemAdapter(
         holder.deleteButton.setOnClickListener {
             updateDB(folderListItems[position].sessionId)
         }
+        holder.root.setOnClickListener {
+            val action = FolderFragmentDirections.actionNavigationFolderToNavigationAccount(folderListItems[position].sessionId)
+            holder.itemView.findNavController().navigate(action)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -55,5 +60,6 @@ class FolderListItemAdapter(
         val recordedDate: TextView = itemView.findViewById(R.id.recorded_date)
         val deleteButton: ImageButton = itemView.findViewById(R.id.delete_button)
         val editButton: ImageButton = itemView.findViewById(R.id.edit_button)
+        val root :View = itemView;
     }
 }

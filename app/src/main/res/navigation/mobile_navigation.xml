@@ -15,11 +15,21 @@
         android:id="@+id/navigation_account"
         android:name="com.example.gptbros.ui.account.AccountFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <argument
+            android:name="sessionId"
+            app:argType="java.util.UUID" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_folder"
         android:name="com.example.gptbros.ui.folder.FolderFragment"
         android:label="Folder"
-        tools:layout="@layout/fragment_folder" />
+        tools:layout="@layout/fragment_folder"
+        >
+        <action
+            android:id="@+id/action_navigation_folder_to_navigation_account"
+            app:destination="@id/navigation_account" />
+    </fragment>
+
 </navigation>

@@ -27,7 +27,7 @@ class SummaryAPI (){
     )
 
     @OptIn(BetaOpenAI::class)
-    fun makeSumItem(chatResponse: ChatCompletion): SummaryItem{
+    fun makeSumItem(chatResponse: ChatCompletion): SummaryItem {
         return SummaryItem(chatResponse.id, chatResponse.model.toString(),
             (chatResponse.choices[0].message?.content ?: String) as String
         )
