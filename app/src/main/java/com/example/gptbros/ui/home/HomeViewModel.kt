@@ -44,7 +44,7 @@ import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 
 
-
+const val TAG = "HomeViewModel"
 class HomeViewModel : ViewModel() {
     private val gptBrosRepository = GptBrosRepository.get()
 
@@ -56,13 +56,7 @@ class HomeViewModel : ViewModel() {
     val text: LiveData<String> = _text
     val isRecording = false
 
-    init {
-        viewModelScope.launch {
-            //val summary : String =  getSummaries("TRANSCRIPT TEXT")
-            val summary = "Summary unimplemented"
-            Log.d("HomeViewModel", summary)
-        }
-    }
+
 
     fun onRecordUpdateDb(recordingName : String, recordingCategory : String) {
         val session : Session = Session(UUID.randomUUID(), Date(), Stage.RECORDING, recordingCategory, recordingName)
@@ -106,7 +100,7 @@ class HomeViewModel : ViewModel() {
 
             //put result in summary.copy
             val summaryRes = summarizeTranscription(transcriptionRes)
-            Log.d(ContentValues.TAG, "Summary response: " + summaryRes)
+            Log.d(TAG, "Summary response: " + summaryRes)
             gptBrosRepository.updateSummary(summary.copy(content = summaryRes, status = Status.FINISHED))
         }
     }
@@ -124,7 +118,7 @@ class HomeViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             val speechClient = createSpeechClient(context)
             val data = (ByteString.copyFrom(File(filePath).readBytes()))
-            Log.d("TUT", "ByteString data size: ${data.size()}")
+            Log.d(TAG, "ByteString data size: ${data.size()}")
             val config = RecognitionConfig.newBuilder()
                         .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                         .setLanguageCode("en-US")
@@ -139,7 +133,7 @@ class HomeViewModel : ViewModel() {
 
             val response = speechClient.recognize(config, audio)
 
-            Log.d("TUT", "Response, count ${response.resultsCount}")
+            Log.d(TAG, "Response, count ${response.resultsCount}")
             val results = response.resultsList
             for (result in results) {
                 val alternative = result.getAlternativesList().get(0)
@@ -148,7 +142,7 @@ class HomeViewModel : ViewModel() {
             }
 
             val transcript = response.resultsList.joinToString(" ") { it.alternativesList[0].transcript }
-            Log.d(ContentValues.TAG, "Transcrip response: " + transcript)
+            Log.d(TAG, "Transcript response: " + transcript)
             speechClient.shutdown()
             transcript
         }

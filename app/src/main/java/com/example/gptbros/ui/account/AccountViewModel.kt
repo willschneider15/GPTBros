@@ -1,10 +1,7 @@
 package com.example.gptbros.ui.folder
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.gptbros.adapters.DatabaseTupleAdapter
 import com.example.gptbros.model.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +11,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 
-class AccountViewModel : ViewModel() {
+class AccountViewModel(sessionId : UUID) : ViewModel() {
     private val TAG : String = "AccountViewModel"
     private val gptBrosRepository = GptBrosRepository.get()
     private val _session : MutableStateFlow<Session> = MutableStateFlow(Session(UUID.randomUUID(), Date(), Stage.RECORDING, "Loading...", "Loading..."))
@@ -44,9 +41,8 @@ class AccountViewModel : ViewModel() {
 
     init {
         //Prevent app crashing when the db returns a null object when nothing got selected
-        if(gptBrosRepository.selectedSession != UUID.fromString("26929514-237c-11ed-861d-0242ac120002")) {
             viewModelScope.launch {
-                gptBrosRepository.listenOnSession(gptBrosRepository.selectedSession).collect() {
+                gptBrosRepository.listenOnSession(sessionId).collect() {
                     largeLog(TAG, "INCOMING:"+it.toString())
                     largeLog(TAG, "CURRENT:"+_session.value.toString())
                     _session.value = it;
@@ -54,7 +50,7 @@ class AccountViewModel : ViewModel() {
                 }
             }
             viewModelScope.launch {
-                gptBrosRepository.listenOnRecording(gptBrosRepository.selectedSession).collect() {
+                gptBrosRepository.listenOnRecording(sessionId).collect() {
                     largeLog(TAG, "INCOMING:"+it.toString())
                     largeLog(TAG, "CURRENT:"+_recording.value.toString())
                     _recording.value = it;
@@ -62,7 +58,7 @@ class AccountViewModel : ViewModel() {
                 }
             }
             viewModelScope.launch {
-                gptBrosRepository.listenOnTranscription(gptBrosRepository.selectedSession).collect() {
+                gptBrosRepository.listenOnTranscription(sessionId).collect() {
                     largeLog(TAG, "INCOMING:"+it.toString())
                     largeLog(TAG, "CURRENT:"+_transcription.value.toString())
                     _transcription.value = it;
@@ -70,16 +66,13 @@ class AccountViewModel : ViewModel() {
                 }
             }
             viewModelScope.launch {
-                gptBrosRepository.listenOnSummary(gptBrosRepository.selectedSession).collect() {
+                gptBrosRepository.listenOnSummary(sessionId).collect() {
                     largeLog(TAG, "INCOMING:"+it.toString())
                     largeLog(TAG, "CURRENT:"+_summary.value.toString())
                     _summary.value = it;
                     largeLog(TAG, "NEW:"+it.toString())
                 }
             }
-
-
-        }
     }
     private fun largeLog(tag: String?, content: String) {
         if (content.length > 4000) {
@@ -88,5 +81,13 @@ class AccountViewModel : ViewModel() {
         } else {
             Log.d(tag, content)
         }
+    }
+}
+
+
+
+class AccountViewModelFactory(private val sessionId: UUID) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return AccountViewModel(sessionId) as T
     }
 }

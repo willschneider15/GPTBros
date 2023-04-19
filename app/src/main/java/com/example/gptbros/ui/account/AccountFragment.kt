@@ -12,10 +12,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import com.example.gptbros.databinding.FragmentAccountBinding
 import com.example.gptbros.model.FolderListItem
 import com.example.gptbros.model.GptBrosRepository
 import com.example.gptbros.ui.folder.AccountViewModel
+import com.example.gptbros.ui.folder.AccountViewModelFactory
 import com.example.gptbros.ui.folder.FolderListItemAdapter
 import com.example.gptbros.ui.folder.FolderViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +31,12 @@ class AccountFragment : Fragment() {
 
     // This property is only valid between onCreateView and
     // onDestroyView.
+    private val args: AccountFragmentArgs by navArgs()
+    private val accountViewModel : AccountViewModel by viewModels {
+        AccountViewModelFactory(args.sessionId)
+    }
+
     private val binding get() = _binding!!
-    private val accountViewModel : AccountViewModel by viewModels()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -54,7 +60,7 @@ class AccountFragment : Fragment() {
                 launch {
                     accountViewModel.session.collect { item ->
                         Log.d("AccountFragment", "recording"+item.toString())
-                        binding.textDashboard.text = item.toString()
+
                     }
                 }
                 launch {
@@ -70,6 +76,7 @@ class AccountFragment : Fragment() {
                 launch {
                     accountViewModel.summary.collect { item ->
                         Log.d("AccountFragment", item.toString())
+                        binding.textDashboard.text = item.content
                     }
                 }
             }
