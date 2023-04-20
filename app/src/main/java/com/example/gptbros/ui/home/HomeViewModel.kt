@@ -131,7 +131,6 @@ class HomeViewModel : ViewModel() {
 
 
             val response = speechClient.recognize(config, audio)
-
             Log.d(TAG, "Response, count ${response.resultsCount}")
             val results = response.resultsList
             for (result in results) {
@@ -148,6 +147,9 @@ class HomeViewModel : ViewModel() {
     }
 
     suspend fun summarizeTranscription(transcription : String) : String {
+        if(transcription.isEmpty()) {
+            "Nothing could be transcribed from recording"
+        }
         val summaryAPI = SummaryAPI()
         lateinit var summaryItem: SummaryItem
         try {

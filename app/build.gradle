@@ -88,14 +88,21 @@ dependencies {
 
     implementation 'androidx.room:room-ktx:2.5.1'
     implementation 'androidx.room:room-runtime:2.5.1'
-    implementation 'androidx.test:core-ktx:1.4.0'
-
+    testImplementation 'androidx.test.ext:junit-ktx:1.1.2'
     kapt 'androidx.room:room-compiler:2.5.1'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    testImplementation 'androidx.test.ext:junit-ktx:1.1.2'
+    debugImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    def androidx_test = "1.1.0"
+    androidTestImplementation "androidx.test:runner:$androidx_test"
+    androidTestImplementation "androidx.test:core:$androidx_test"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidx_test"
+    androidTestImplementation "androidx.test:rules:$androidx_test"
+    def androidx_test_espresso = "3.1.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_test_espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_test_espresso"
     testImplementation 'org.robolectric:robolectric:4.4'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    debugImplementation 'androidx.fragment:fragment-testing:1.5.7'
 }
 apply plugin: 'androidx.navigation.safeargs'

@@ -11,7 +11,8 @@ private const val DATABASE_NAME = "gpt-bros-database"
 class GptBrosRepository private constructor(context: Context) {
     private val coroutineScope : CoroutineScope = GlobalScope
 
-    private val database : GptBrosDatabase = Room
+    //NEVER SET THIS VALUE UNLESS IT"S A TESTING ENVIRONMENT
+     var database : GptBrosDatabase = Room
         .databaseBuilder(
             context.applicationContext,  //We give it app context cuz it needs fs
             GptBrosDatabase::class.java,
@@ -75,6 +76,10 @@ class GptBrosRepository private constructor(context: Context) {
     suspend fun listenOnTranscription (sessionId:UUID) = database.gptBrosDao().listOnTranscription(sessionId)
     suspend fun listenOnSession (sessionId:UUID) = database.gptBrosDao().listenOnSession(sessionId)
 
+    //THIS SHOULD ONLY BE CALLED IN A TESTING ENVIRONMENT!
+    fun setDb(db:GptBrosDatabase) {
+        database = db;
+    }
 
     companion object {
         // "CrimeRepository?" Just says that it's allowed to be null
@@ -92,5 +97,7 @@ class GptBrosRepository private constructor(context: Context) {
             return INSTANCE ?:
             throw IllegalStateException("CrimeRepository must be initalized")
         }
+
+
     }
 }

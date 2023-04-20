@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
             if(audioManager?.isRecording == false) {
                 val name = binding.recordingName.text.toString()
                 val category = binding.recordingCatagory.text.toString()
-                audioManager?.startRecording(name,activity!!)
+                audioManager?.startRecording(name,requireActivity())
                 homeViewModel.onRecordUpdateDb(name, category)
                 //this function can only be called when the ui in on screen (activity !=  null)
                 //binding.buttonRecord.background (activity!!.getColor(R.color.red))
@@ -95,7 +95,7 @@ class HomeFragment : Fragment() {
         //we know context will be non null because this function is only called when view is on screen
         if(context != null && activity != null && activity is MainActivity) {
             val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            ActivityCompat.requestPermissions(activity!!, permissions,0)
+            ActivityCompat.requestPermissions(requireActivity(), permissions,0)
         } else {
             Log.e(TAG, "Something went wrong when asking for permissions!")
         }
@@ -103,8 +103,8 @@ class HomeFragment : Fragment() {
 
     fun checkPermissions() : Boolean {
         if(context != null && activity != null && activity is MainActivity) {
-            val audioPermission : Boolean = ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
-            val writePermission : Boolean = ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            val audioPermission : Boolean = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+            val writePermission : Boolean = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
             return  audioPermission && writePermission
         }
         return false
