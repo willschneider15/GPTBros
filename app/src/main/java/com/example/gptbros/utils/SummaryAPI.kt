@@ -19,9 +19,8 @@ class SummaryAPI (){
         messages = listOf(
             ChatMessage(
                 role = ChatRole.User,
-                content = "Given the following transcript from a lecture, Write a 2-3 sentance general summary of the lecture followed by  " +
-                        "bullets that highlight key points. For each point, the point and an " +
-                        "explanation of it in: " + transcript
+                content = "You are a helpful study tool. Given the following transcript from a lecture, Write a 2-3 sentance general summary of the lecture followed by  " +
+                        "bullets that highlight key points. Do not go off topic:\n transcript:" + transcript
             )
         )
     )
