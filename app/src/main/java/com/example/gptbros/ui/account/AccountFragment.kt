@@ -57,22 +57,9 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    accountViewModel.session.collect { item ->
-                        Log.d("AccountFragment", "recording"+item.toString())
 
-                    }
-                }
-                launch {
-                    accountViewModel.recording.collect { item ->
-                        Log.d("AccountFragment", "recording"+item.toString())
-                    }
-                }
-                launch {
-                    accountViewModel.transcription.collect { item ->
-                        Log.d("AccountFragment", item.toString())
-                    }
-                }
+
+
                 launch {
                     accountViewModel.summary.collect { item ->
                         Log.d("AccountFragment", item.toString())
