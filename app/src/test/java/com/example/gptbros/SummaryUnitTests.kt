@@ -69,4 +69,12 @@ class SummaryUnitTests {
             assertEquals(testResponse1, getSummmary(testResponse1))
         }
     }
+
+    @Test
+    fun testEmpty() = runTest {
+        launch(Dispatchers.Main) {  // Will be launched in the mainThreadSurrogate dispatcher
+            assertFalse(getSummmary("").isEmpty())
+        }
+    }
+
 }
